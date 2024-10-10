@@ -23,13 +23,13 @@ pipeline {
                 sh 'osv-scanner scan --lockfile package-lock.json --format json --output results/sca-osv-scanner.json'
             }
         }
-        post {
+    }
+    post {
             always {
                 defectDojoPublisher(artifact: 'results/sca-osv-scanner.json', 
                     productName: 'Juice Shop', 
                     scanType: 'OSV Scan', 
                     engagementName: 'novik21e@gmail.com')
             }
-        }
     }
 }
