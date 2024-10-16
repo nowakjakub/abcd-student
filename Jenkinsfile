@@ -12,10 +12,15 @@ pipeline {
                 }
             }
         }
-        stage('Example') {
+        stage('[ZAP] Baseline passive-scan') {
             steps {
-                echo 'Hello!'
-                sh 'ls -la'
+                sh 'mkdir -p results/'
+                sh '''
+                    docker run --name juice-shop -d -rm \
+                        -p 3000:300 \
+                        bkimminich/juice-shop
+                    sleep 5
+                '''
             }
         }
     }
