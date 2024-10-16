@@ -24,4 +24,11 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            sh '''
+                docker stop juice-shop
+            '''
+        }
+    }
 }
