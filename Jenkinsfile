@@ -45,12 +45,12 @@ pipeline {
             }
         }
     }
-    // post {
-    //     always {
-    //         sh '''
-    //             docker stop zap juice-shop
-    //             docker rm zap
-    //         '''
-    //     }
-    // }
+    post {
+        always {
+            echo 'Archiving artifacts...'
+            archiveArtifacts artifacts: 'results/**/*', fingerprint: true, allowEmptyArchive: true
+            echo 'Sending reports to DefectDojo...'
+            defectDojoPublisher(artifact: 'results/zap_xml_report.xml', productName: 'Juice Shop', scanType: 'ZAP Scan', engagementName: 'novik21e@gmail.com')
+        }
+    }
 }
