@@ -45,12 +45,12 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            sh '''
-                docker stop zap juice-shop
-                docker rm zap
-            '''
-        }
-    }
+    // post {
+    //     always {
+    //         sh '''
+    //             docker stop zap juice-shop
+    //             docker rm zap
+    //         '''
+    //     }
+    // }
 }
