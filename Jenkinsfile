@@ -14,6 +14,8 @@ pipeline {
         }
         stage('Prepare') {
             steps {
+                sh 'pwd'
+                sh 'ls -l'
                 sh 'mkdir -p results/'
             }
         }
