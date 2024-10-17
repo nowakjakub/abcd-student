@@ -14,8 +14,6 @@ pipeline {
         }
         stage('Prepare') {
             steps {
-                sh 'pwd'
-                sh 'ls -l'
                 sh 'mkdir -p results/'
             }
         }
@@ -30,8 +28,8 @@ pipeline {
                 sh '''
                     docker run --name zap \
                     -v /home/novik21e/devSecOps/abcd-student/.zap:/zap/wrk/:rw \
-                    -t ghcr.io/zaproxy/zaproxy:stable bash -c \
-                    "zap.sh -cmd -addonupdate; zap.sh -cmd -addoninstall communityScripts -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -autorun /zap/wrk/passive.yaml" \
+                    -t ghcr.io/zaproxy/zaproxy:stable \
+                    bash -c "zap.sh -cmd -addonupdate; zap.sh -cmd -addoninstall communityScripts -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -autorun /zap/wrk/passive.yaml" \
                     || true
                 '''
             }
@@ -46,13 +44,26 @@ pipeline {
                 }
             }
         }
+        stage('SCA scan') {
+            steps {
+                sh 'ovs-scanner scan -L package-lock.json -f json --output results/sca-osv-scanner.json'
+            }
+        }
     }
     post {
         always {
             echo 'Archiving artifacts...'
             archiveArtifacts artifacts: 'results/**/*', fingerprint: true, allowEmptyArchive: true
             echo 'Sending reports to DefectDojo...'
-            defectDojoPublisher(artifact: 'results/zap_xml_report.xml', productName: 'Juice Shop', scanType: 'ZAP Scan', engagementName: 'novik21e@gmail.com')
+            defectDojoPublisher(artifact: 'results/zap_xml_report.xml', 
+                productName: 'Juice Shop', 
+                scanType: 'ZAP Scan', 
+                engagementName: 'novik21e@gmail.com')
+            defectDojoPublisher(artifact: 'results/sca-osv-scanner.json',
+                productName: 'Juice Shop',
+                scanType: 'OSV Scan',
+                engagementName: 'novik21e@gmail.com')
+
         }
     }
 }
