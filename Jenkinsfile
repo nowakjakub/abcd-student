@@ -55,7 +55,7 @@ pipeline {
         stage('TruffleHog Scan') {
             steps {
                 sh 'ls -l'
-                sh 'trufflehog git file://. --branch main --json'
+                sh 'trufflehog git file://. --branch main --json --output results/truffelhog_results.json'
                 sh 'ls -l'
             }
         }
