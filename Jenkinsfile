@@ -54,6 +54,8 @@ pipeline {
         }
         stage('TruffleHog Scan') {
             steps {
+                sh 'pwd'
+                sh 'git log -1'
                 sh 'trufflehog git file://. --since-commit main --branch HEAD --fail'
             }
         }
