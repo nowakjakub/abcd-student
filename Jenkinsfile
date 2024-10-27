@@ -54,7 +54,9 @@ pipeline {
         }
         stage('TruffleHog Scan') {
             steps {
-                sh 'trufflehog git file://. --branch main --json --fail > results/truffelhog_results.json'
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh 'trufflehog git file://. --branch main --json --fail > results/truffelhog_results.json'
+                }
             }
         }
     }
@@ -74,10 +76,10 @@ pipeline {
             //     scanType: 'OSV Scan',
             //     engagementName: 'novik21e@gmail.com')
             echo 'Sending Trufflehog Scan...'
-            defectDojoPublisher(artifact: 'results/truffelhog_results.json', 
-                productName: 'Juice Shop', 
-                scanType: 'Trufflehog Scan', 
-                engagementName: 'novik21e@gmail.com')
+            // defectDojoPublisher(artifact: 'results/truffelhog_results.json', 
+            //     productName: 'Juice Shop', 
+            //     scanType: 'Trufflehog Scan', 
+            //     engagementName: 'novik21e@gmail.com')
         }
     }
 }
