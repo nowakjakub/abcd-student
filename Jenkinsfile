@@ -56,7 +56,7 @@ pipeline {
             steps {
                 sh 'pwd'
                 sh 'git log -1'
-                sh 'trufflehog git file://. --since-commit main --branch main --fail'
+                sh 'trufflehog git file://. --branch main --fail --force-skip-archives --json'
             }
         }
     }
