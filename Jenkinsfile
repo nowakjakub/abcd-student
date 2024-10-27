@@ -54,7 +54,7 @@ pipeline {
         }
         stage('TruffleHog Scan') {
             steps {
-                sh 'trufflehog git file://. --since-commit main --branch HEAD --only-verified --fail --json'
+                sh 'trufflehog git file://. --since-commit main --branch HEAD --fail'
             }
         }
     }
