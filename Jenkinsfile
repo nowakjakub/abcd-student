@@ -54,7 +54,7 @@ pipeline {
         }
         stage('TruffleHog Scan') {
             steps {
-                sh 'trufflehog git file://. --branch main --fail > results/truffelhog_results.json'
+                sh 'trufflehog git file://. --branch main --json --fail > results/truffelhog_results.json'
             }
         }
     }
@@ -63,14 +63,21 @@ pipeline {
             echo 'Archiving artifacts...'
             archiveArtifacts artifacts: 'results/**/*', fingerprint: true, allowEmptyArchive: true
             echo 'Sending reports to DefectDojo...'
+            echo 'Sending ZAP Scan...'
             // defectDojoPublisher(artifact: 'results/zap_xml_report.xml', 
             //     productName: 'Juice Shop', 
             //     scanType: 'ZAP Scan', 
             //     engagementName: 'novik21e@gmail.com')
+            echo 'Sending OSV Scan...'
             // defectDojoPublisher(artifact: 'results/sca-osv-scanner.json',
             //     productName: 'Juice Shop',
             //     scanType: 'OSV Scan',
             //     engagementName: 'novik21e@gmail.com')
+            echo 'Sending Trufflehog Scan...'
+            defectDojoPublisher(artifact: 'results/truffelhog_results.json', 
+                productName: 'Juice Shop', 
+                scanType: 'Trufflehog Scan', 
+                engagementName: 'novik21e@gmail.com')
         }
     }
 }
