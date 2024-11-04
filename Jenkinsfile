@@ -19,6 +19,7 @@ pipeline {
         }
         stage('DAST') {
             steps {
+                echo 'DAST'
                 // sh '''
                 //     docker run --name juice-shop -d --rm \
                 //         -p 3000:3000 \
@@ -35,6 +36,7 @@ pipeline {
             }
             post {
                 always {
+                    echo 'Post'
                     // sh '''
                     //     docker cp zap:/zap/wrk/reports/zap_html_report.html ${WORKSPACE}/results/zap_html_report.html
                     //     docker cp zap:/zap/wrk/reports/zap_xml_report.xml ${WORKSPACE}/results/zap_xml_report.xml
@@ -44,14 +46,16 @@ pipeline {
                 }
             }
         }
-        stage('SCA scan') {
+        stage('SCA Scan') {
             steps {
+                echo 'SCA Scan'
                 // sh 'osv-scanner scan -L package-lock.json -f json --output results/sca-osv-scanner.json || true'
             }
         }
         stage('TruffleHog Scan') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    echo 'TruffleHog Scan'
                     // sh 'trufflehog git file://. --branch main --json --fail > results/truffelhog_results.json'
                 }
             }
